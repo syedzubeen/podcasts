@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "265776935902",
+    "project_id": "podcasts-c8763",
+    "storage_bucket": "podcasts-c8763.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265776935902:android:951317f86d13715854a34f",
+        "android_client_info": {
+          "package_name": "com.example.podcasts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265776935902-5n30v8enj8hjcan8ejbaa72meag9kmpf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsj9D88OW8HcnarLkky1mJVnEf0d338PI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265776935902-5n30v8enj8hjcan8ejbaa72meag9kmpf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
