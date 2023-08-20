@@ -173,7 +173,7 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
         // Get the download URL for the audio file
         if (snapshot.state == firebase_storage.TaskState.success) {
           final downloadUrl = await snapshot.ref.getDownloadURL();
-          print('Audio uploaded to Firebase Storage: $downloadUrl');
+          // print('Audio uploaded to Firebase Storage: $downloadUrl');
 
           // Display a success SnackBar
           ScaffoldMessenger.of(context).showSnackBar(
@@ -209,7 +209,7 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
           }
 
           if (transcriptionFileUrl != null) {
-            print('Transcription file URL: $transcriptionFileUrl');
+            // print('Transcription file URL: $transcriptionFileUrl');
             downloadTranscription(transcriptionFileUrl);
             // Display a success SnackBar for the transcription file
             ScaffoldMessenger.of(context).showSnackBar(
