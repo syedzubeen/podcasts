@@ -8,6 +8,8 @@ import 'package:flutter/services.dart'; // Import for SystemChrome
 import 'transcription_page.dart';
 import 'package:podcasts/podcast_item.dart'; // Import the file
 import 'dart:convert';
+import 'app_info_page.dart'; // Replace with the correct file path
+
 
 
 
@@ -263,7 +265,12 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
           IconButton(
             icon: Icon(Icons.info),
             onPressed: () {
-              // Add your action for the info button here
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AppInfoPage(),
+                ),
+              );
             },
           ),
         ],
