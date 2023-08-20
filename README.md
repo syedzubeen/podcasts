@@ -14,15 +14,28 @@ Ready to embark on the podcast revolution? Start using Podcasts.AI today! ðŸŽ™ï¸
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Clone the Repository
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+git clone https://github.com/syedzubeen/podcasts.git
+```
+
+### Set the Working Directory to the Project
+
+```bash
+cd podcasts
+```
+
+### Run Flutter
+
+```bash
+flutter run
+```
+A few resources to help you get started with this Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
+- [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
 ## Issue
