@@ -2,7 +2,9 @@
 
 Unlock the power of podcasts like never before with Podcasts.AI! Tired of straining to catch every word in your favorite podcasts or wishing you could quickly reference a specific section? Look no further. Podcasts.AI is your all-in-one solution for podcast transcription and audio exploration.
 
-Key Features:
+![podacasts ai-readme-image](https://github.com/syedzubeen/podcasts/assets/14253061/d8f26e0b-0b13-4a2d-9be9-40892cda5825)
+
+## Key Features:
 
 🎧 Listen & Transcribe: With a single click, PodScript transforms audio content into crystal-clear, text-based transcripts. No more endless rewinding and pausing; effortlessly read or search through your favorite podcasts.
 
