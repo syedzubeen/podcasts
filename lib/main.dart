@@ -5,6 +5,9 @@ import 'package:just_audio/just_audio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/services.dart'; // Import for SystemChrome
+import 'transcription_page.dart';
+import 'package:podcasts/podcast_item.dart'; // Import the file
+import 'dart:convert';
 
 
 
@@ -24,7 +27,7 @@ class MyApp extends StatelessWidget {
       statusBarBrightness: Brightness.dark, // Set the status bar content color
     ));
     return MaterialApp(
-      title: 'TED Talks Podcasts',
+      title: 'Podcast.AI',
 
       theme: ThemeData(
         appBarTheme: AppBarTheme(
@@ -46,6 +49,7 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
   late AudioPlayer audioPlayer;
   // Variable to keep track of the currently playing podcast
   PodcastItem? currentlyPlaying;
+  String? transcriptionFileUrl; // Declare it here
 
   @override
   void initState() {
@@ -64,7 +68,11 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
         final title = item.findElements('title').single.text;
         final enclosure = item.findElements('enclosure').first;
         final audioUrl = enclosure.getAttribute('url');
-        final podcastItem = PodcastItem(title, audioUrl ?? ''); // Provide a default value if audioUrl is null
+        // Add code to extract the thumbnail URL
+        final mediaThumbnail = item.findElements('media:thumbnail').first;
+        final thumbnailUrl = mediaThumbnail.getAttribute('url');
+        //print('Thumbnail URL: $thumbnailUrl');
+        final podcastItem = PodcastItem(title, audioUrl ?? '', thumbnailUrl ?? '', ''); // Provide a default value if audioUrl is null
         podcastItems.add(podcastItem);
       }
       setState(() {
@@ -100,38 +108,149 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
     });
   }
 
-  Future<void> downloadAndUploadToFirebaseStorage(PodcastItem podcast) async {
+  Future<String?> downloadTranscription(String? transcriptionFileUrl) async {
+    if (transcriptionFileUrl == null) {
+      // Handle the case where transcriptionFileUrl is null
+      print('Transcription file URL is null');
+      return null;
+    }
+
+    try {
+      final response = await http.get(Uri.parse(transcriptionFileUrl));
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+
+        if (jsonResponse.containsKey('results') && jsonResponse['results'] is List) {
+          final results = jsonResponse['results'] as List;
+
+          final transcriptList = results
+              .map((result) =>
+              (result['alternatives'] as List).map((alternative) => alternative['transcript'].toString()).join(" "))
+              .toList();
+
+          final transcript = transcriptList.join('\n');
+
+          return transcript;
+        } else {
+          // Handle the case where 'results' key is missing or not a list
+          print('Error: Invalid JSON format in response');
+          return null;
+        }
+      } else {
+        // Handle the error condition, e.g., return null or an error message
+        print('Error: HTTP request failed with status ${response.statusCode}');
+        return null;
+      }
+    } catch (error) {
+      // Handle any exceptions that might occur during the HTTP request
+      print('Error: $error');
+      return null;
+    }
+  }
+
+
+
+  Future<void> downloadAndUploadToFirebaseStorage(
+      BuildContext context,
+      PodcastItem podcast,
+      ) async {
     final audioUrl = podcast.audioUrl;
     if (audioUrl != null) {
       final response = await http.get(Uri.parse(audioUrl));
       if (response.statusCode == 200) {
         final audioBytes = response.bodyBytes;
-
-        // Upload the audio file to Firebase Storage
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
         final storageReference = firebase_storage.FirebaseStorage.instance
             .ref()
-            .child('podcasts/${DateTime.now().millisecondsSinceEpoch}.mp3');
+            .child('podcasts/$timestamp.mp3');
 
         final uploadTask = storageReference.putData(audioBytes);
         final snapshot = await uploadTask.whenComplete(() {});
 
-        // Get the download URL
+        // Get the download URL for the audio file
         if (snapshot.state == firebase_storage.TaskState.success) {
           final downloadUrl = await snapshot.ref.getDownloadURL();
           print('Audio uploaded to Firebase Storage: $downloadUrl');
-          // Here you can provide a UI indication that the download and upload were successful
+
+          // Display a success SnackBar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Audio uploaded to Firebase Storage: $downloadUrl'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Introduce a 5-minute (300 seconds) delay before fetching the transcription file
+          await Future.delayed(Duration(seconds: 500 ));
+
+          // Now, let's wait for the transcript file to become available
+          final maxWaitTime = Duration(seconds: 120); // Adjust the timeout as needed
+          final timeout = DateTime.now().add(maxWaitTime);
+
+          transcriptionFileUrl = null; // Initialize to null in case of failure
+
+          while (DateTime.now().isBefore(timeout)) {
+            final transcriptionFileReference = firebase_storage.FirebaseStorage.instance
+                .ref()
+                .child('podcasts/$timestamp.mp3.wav_transcription.txt');
+
+            final url = await transcriptionFileReference.getDownloadURL();
+            print('CHATGPTTranscription File URL: $url');
+            if (url != null) {
+              transcriptionFileUrl = url;
+              break; // File found, exit the loop
+            }
+
+            // Wait for a short duration before checking again
+            await Future.delayed(Duration(seconds: 10)); // Adjust the interval as needed
+          }
+
+          if (transcriptionFileUrl != null) {
+            print('Transcription file URL: $transcriptionFileUrl');
+            downloadTranscription(transcriptionFileUrl);
+            // Display a success SnackBar for the transcription file
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Transcription file downloaded successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // At this point, you have both the audio file and transcription file URLs
+            // You can proceed to display or use them in your app
+          } else {
+            print('Transcription file not found within the timeout period');
+            // Handle the case where the transcription file wasn't found
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Transcription file not found within the timeout period!'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         } else {
           print('Error uploading audio to Firebase Storage');
-          // Handle the error condition
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error uploading audio!'),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       } else {
         print('Error downloading audio file');
-        // Handle the error condition
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error downloading audio file!'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } else {
       print('Audio URL is null');
     }
   }
+
+
 
 
   @override
@@ -140,6 +259,14 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
       appBar: AppBar(
         title: Text('Podcasts.AI'),
         backgroundColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () {
+              // Add your action for the info button here
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -148,18 +275,73 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
               itemCount: podcasts.length,
               itemBuilder: (context, index) {
                 final podcast = podcasts[index];
+                final thumbnailUrl = podcast.thumbnailUrl;
+
                 return Column(
                   children: [
                     ListTile(
+                      leading: thumbnailUrl != null
+                          ? Image.network(
+                        thumbnailUrl,
+                        errorBuilder: (context, error, stackTrace) {
+                          print('Image Error: $error');
+                          return SizedBox.shrink();
+                        },
+                      )
+                          : SizedBox.expand(),
                       title: Text(podcast.title),
-                      trailing: IconButton(
-                        icon: Icon(Icons.download_for_offline_outlined),
-                        onPressed: () => downloadAndUploadToFirebaseStorage(podcast),
-                        color: Colors.black, // Change this color to the desired color
+                      trailing: Row(
+                        // Start of Row for trailing icons
+                        mainAxisSize: MainAxisSize.min, // To make the Row take minimum space
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.download_for_offline_outlined),
+                            onPressed: () async {
+                              // Call downloadAndUploadToFirebaseStorage with context
+                              await downloadAndUploadToFirebaseStorage(context, podcast);
+                            },
+                            color: Colors.black,
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              if (transcriptionFileUrl != null) {
+                                final transcription = await downloadTranscription(transcriptionFileUrl);
+                                if (transcription != null) {
+                                  print('Podcast Transcription: ${transcription}');
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => TranscriptionPage(
+                                          transcription: transcription
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  // Handle the case where transcription is null or an error occurred
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error downloading transcription!'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // Handle the case where transcriptionFileUrl is null
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Transcription file URL is null!'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            },
+                            icon: Icon(Icons.sticky_note_2_sharp),
+                          ),
+                        ], // End of Row for trailing icons
                       ),
                       onTap: () => playPodcast(podcast),
                     ),
-                    Divider(), // Add a Divider after each ListTile
+                    // Add a button to navigate to the transcription page
+                    Divider(),
                   ],
                 );
               },
@@ -190,9 +372,4 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
   }
 }
 
-class PodcastItem {
-  final String title;
-  final String? audioUrl; // Use String? to allow nullable value
 
-  PodcastItem(this.title, this.audioUrl);
-}
