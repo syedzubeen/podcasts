@@ -6,9 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/services.dart'; // Import for SystemChrome
 import 'transcription_page.dart';
-import 'package:podcasts/podcast_item.dart'; // Import the file
+import 'package:podcasts/podcast_item.dart';
 import 'dart:convert';
-import 'app_info_page.dart'; // Replace with the correct file path
+import 'app_info_page.dart';
 
 
 
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Customize the status bar
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.blue, // Set the status bar color
+      statusBarColor: Colors.black, // Set the status bar color
       statusBarBrightness: Brightness.dark, // Set the status bar content color
     ));
     return MaterialApp(
@@ -74,7 +74,8 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
         final mediaThumbnail = item.findElements('media:thumbnail').first;
         final thumbnailUrl = mediaThumbnail.getAttribute('url');
         //print('Thumbnail URL: $thumbnailUrl');
-        final podcastItem = PodcastItem(title, audioUrl ?? '', thumbnailUrl ?? '', ''); // Provide a default value if audioUrl is null
+        // Provide a default value if audioUrl is null
+        final podcastItem = PodcastItem(title, audioUrl ?? '', thumbnailUrl ?? '', '');
         podcastItems.add(podcastItem);
       }
       setState(() {
@@ -177,11 +178,12 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
           // Display a success SnackBar
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Audio uploaded to Firebase Storage: $downloadUrl'),
+              content: Text('Audio uploaded to Firebase Storage!'),
               backgroundColor: Colors.green,
             ),
           );
           // Introduce a 5-minute (300 seconds) delay before fetching the transcription file
+          // Hardcoded wait for now
           await Future.delayed(Duration(seconds: 500 ));
 
           // Now, let's wait for the transcript file to become available
@@ -196,14 +198,14 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
                 .child('podcasts/$timestamp.mp3.wav_transcription.txt');
 
             final url = await transcriptionFileReference.getDownloadURL();
-            print('CHATGPTTranscription File URL: $url');
+            // print('Transcription File URL: $url');
             if (url != null) {
               transcriptionFileUrl = url;
               break; // File found, exit the loop
             }
 
             // Wait for a short duration before checking again
-            await Future.delayed(Duration(seconds: 10)); // Adjust the interval as needed
+            await Future.delayed(Duration(seconds: 10));
           }
 
           if (transcriptionFileUrl != null) {
@@ -299,7 +301,7 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
                       title: Text(podcast.title),
                       trailing: Row(
                         // Start of Row for trailing icons
-                        mainAxisSize: MainAxisSize.min, // To make the Row take minimum space
+                        mainAxisSize: MainAxisSize.min, // Making the Row take minimum space
                         children: [
                           IconButton(
                             icon: Icon(Icons.download_for_offline_outlined),
@@ -323,7 +325,7 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
                                     ),
                                   );
                                 } else {
-                                  // Handle the case where transcription is null or an error occurred
+                                  // Handle the cases where transcription is null or an error occurred
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('Error downloading transcription!'),
@@ -347,7 +349,6 @@ class _PodcastListScreenState extends State<PodcastListScreen> {
                       ),
                       onTap: () => playPodcast(podcast),
                     ),
-                    // Add a button to navigate to the transcription page
                     Divider(),
                   ],
                 );
