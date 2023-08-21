@@ -3,8 +3,8 @@
 <div align="center">
 <img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
 <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" />
-<img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" />
 <img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
+<img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" />
 </div>
 <br><br>
 Unlock the power of podcasts like never before with Podcasts.AI! Tired of straining to catch every word in your favorite podcasts or wishing you could quickly reference a specific section? Look no further. Podcasts.AI is your all-in-one solution for podcast transcription and audio exploration.
@@ -55,3 +55,6 @@ Give the repository a star :)
 
 ## License
 Ripped is licensed under the  <a href="https://github.com/syedzubeen/ripped-mindsdb-project/blob/main/LICENSE">MIT License.</a>
+
+***
+This app was built as a part of the Firebase Builders'23 Campaign hosted by <a href="https://invertase.io/">Invertase</a>.
