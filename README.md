@@ -1,5 +1,12 @@
 # Podcasts.AI
-
+<br>
+<div align="center">
+<img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
+<img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white" />
+<img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" />
+<img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
+</div>
+<br><br>
 Unlock the power of podcasts like never before with Podcasts.AI! Tired of straining to catch every word in your favorite podcasts or wishing you could quickly reference a specific section? Look no further. Podcasts.AI is your all-in-one solution for podcast transcription and audio exploration.
 
 ![podacasts ai-readme-image](https://github.com/syedzubeen/podcasts/assets/14253061/d8f26e0b-0b13-4a2d-9be9-40892cda5825)
