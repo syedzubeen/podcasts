@@ -12,9 +12,9 @@ Unlock the power of podcasts like never before with Podcasts.AI! Tired of strain
 
 ## Key Features:
 
-🎧 Listen & Transcribe: With a single click, PodScript transforms audio content into crystal-clear, text-based transcripts. No more endless rewinding and pausing; effortlessly read or search through your favorite podcasts.
+🎧 Listen & Transcribe: With a single click, Podcasts.AI transforms audio content into crystal-clear, text-based transcripts. No more endless rewinding and pausing; effortlessly read or search through your favorite podcasts.
 
-🚀 User-Friendly: PodScript is designed with simplicity in mind. No technical expertise required. Just listen, click, and explore.
+🚀 User-Friendly: Podcasts.AI is designed with simplicity in mind. No technical expertise is required. Just listen, click, and explore.
 
 Transform the way you engage with podcasts—Podcasts.AI is your gateway to unlocking the wealth of knowledge buried within every episode. Join us on this journey of audio discovery, and let's make podcasts more accessible and insightful for everyone.
 
