@@ -1,4 +1,10 @@
-# Podcasts.AI
+# Podcasts.AI  
+
+<div  align="right">
+<img src="https://cdn-images-1.medium.com/v2/resize:fill:1600:480/gravity:fp:0.5:0.4/1*QDHVnR27JiWDV_nkTg4j4g.png" alt="Image Description" width="170" height="75">
+</div>
+
+
 <br>
 <div align="center">
 <img src="https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" />
@@ -55,5 +61,11 @@ Give the repository a star :)
 ## License
 Ripped is licensed under the  <a href="https://github.com/syedzubeen/ripped-mindsdb-project/blob/main/LICENSE">MIT License.</a>
 
+<br><br>
 ***
-This app was built as a part of the Firebase Builders'23 Campaign hosted by <a href="https://invertase.io/">Invertase</a>.
+<div  align="right">
+  This app was built as a part of the Firebase Builders'23 Campaign hosted by <a href="https://invertase.io/">Invertase</a>.
+    </div>
+
+
+
